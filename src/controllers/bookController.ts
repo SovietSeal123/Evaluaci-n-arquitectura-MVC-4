@@ -1,6 +1,7 @@
 import { Book } from "../models/bookModel.js"
 import { HTTP_MESSAGE } from "../constant/bookConstant.js"
 import type { Request, Response } from "express"
+import mongoose from "mongoose"
 
 const getBooks = async (req: Request, res: Response) => {
     try {
@@ -18,6 +19,11 @@ const getBooks = async (req: Request, res: Response) => {
 const getBookById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
+        
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({message: HTTP_MESSAGE.INVALID_ID})
+        }
+
         const book = await Book.findById(id)
 
         if (!book) {
@@ -45,7 +51,13 @@ const postBooks = async (req: Request, res: Response) => {
 const patchBooks = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
+        
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({message: HTTP_MESSAGE.INVALID_ID})
+        }
+        
         const book = await Book.findByIdAndUpdate(id, req.body, {new: true})
+
 
         if (!book) {
            return res.status(404).json({message: HTTP_MESSAGE.BOOK_NOT_FOUND})
@@ -61,7 +73,13 @@ const patchBooks = async (req: Request, res: Response) => {
 const deleteBooks = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
+        
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({message: HTTP_MESSAGE.INVALID_ID})
+        }
+        
         const book = await Book.findByIdAndDelete(id)
+
 
         if (!book) {
             return res.status(404).json({message: HTTP_MESSAGE.BOOK_NOT_FOUND})
