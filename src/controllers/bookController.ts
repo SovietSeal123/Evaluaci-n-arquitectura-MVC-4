@@ -6,7 +6,30 @@ import mongoose from "mongoose"
 
 const getBooks = async (req: Request, res: Response) => {
     try {
-        const books = await Book.find()
+        const { title, author, genre, publishedYear } = req.query
+        const filters: Record<string, unknown> = {}
+
+        if (typeof title === "string") {
+            filters.title = new RegExp(title, "i")
+        }
+
+        if (typeof author === "string") {
+            filters.author = new RegExp(author, "i")
+        }
+
+        if (typeof genre === "string") {
+            filters.genre = genre
+        }
+
+        if (typeof publishedYear === "string") {
+            const year = Number(publishedYear)
+            
+            if (Number.isFinite(year)) {
+                filters.publishedYear = year
+            }
+        }
+
+        const books = await Book.find(filters)
 
         res.json({message: HTTP_MESSAGE.BOOKS_FOUND, books})
 
