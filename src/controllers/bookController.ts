@@ -44,7 +44,11 @@ const postBooks = async (req: Request, res: Response) => {
         res.status(201).json({message: HTTP_MESSAGE.BOOK_CREATED, book})
 
     } catch (error) {
-        res.status(500).json({message: HTTP_MESSAGE.SERVER_ERROR})
+        if (error instanceof mongoose.mongo.MongoServerError && error.code === 11000) {
+            return res.status(409).json({message: HTTP_MESSAGE.BOOK_ALREADY_EXISTS})
+    }
+
+    res.status(500).json({message: HTTP_MESSAGE.SERVER_ERROR})
     }
 }
 
@@ -66,6 +70,11 @@ const patchBooks = async (req: Request, res: Response) => {
         res.json({message: HTTP_MESSAGE.BOOK_UPDATED, book})
         
     } catch (error) {
+
+        if (error instanceof mongoose.mongo.MongoServerError && error.code === 11000) {
+            return res.status(409).json({message: HTTP_MESSAGE.BOOK_ALREADY_EXISTS})
+    }
+
         res.status(500).json({message: HTTP_MESSAGE.SERVER_ERROR})
     }
 }
