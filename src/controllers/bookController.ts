@@ -8,7 +8,7 @@ const getBooks = async (req: Request, res: Response) => {
     try {
         const books = await Book.find()
 
-        res.json(books)
+        res.json({message: HTTP_MESSAGE.BOOKS_FOUND, books})
 
     } catch (error) {
         res.status(500).json({
@@ -31,7 +31,8 @@ const getBookById = async (req: Request, res: Response) => {
             return res.status(404).json({message: HTTP_MESSAGE.BOOK_NOT_FOUND})
         }
 
-        res.json(book)
+        res.json({message: HTTP_MESSAGE.BOOK_FOUND, book})
+
 
     } catch (error) {
         res.status(500).json({message: HTTP_MESSAGE.SERVER_ERROR})

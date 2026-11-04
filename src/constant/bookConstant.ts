@@ -8,7 +8,9 @@ const HTTP_MESSAGE = {
     SERVER_ERROR: "Error interno del servidor",
     MONGODB_CONNECTED: "Conectado a MongoDB",
     MONGODB_ERROR: "Error al conectar con MongoDB",
-    BOOK_ALREADY_EXISTS: "Ya existe un libro con ese título"
+    BOOK_ALREADY_EXISTS: "Ya existe un libro con ese título",
+    BOOKS_FOUND: "Libros obtenidos correctamente",
+    BOOK_FOUND: "Libro obtenido correctamente",
 }
 
 export { HTTP_MESSAGE }
