@@ -1,6 +1,7 @@
 import { Book } from "../models/bookModel.js"
 import { HTTP_MESSAGE } from "../constant/bookConstant.js"
 import type { Request, Response } from "express"
+import { validateBookData } from "../utils/validateBookData.js"
 import mongoose from "mongoose"
 
 const getBooks = async (req: Request, res: Response) => {
@@ -39,6 +40,12 @@ const getBookById = async (req: Request, res: Response) => {
 
 const postBooks = async (req: Request, res: Response) => {
     try {
+        const validationError = validateBookData(req.body)
+
+        if (validationError) {
+            return res.status(400).json({message: validationError})
+        }
+
         const book = await Book.create(req.body)
 
         res.status(201).json({message: HTTP_MESSAGE.BOOK_CREATED, book})
@@ -54,13 +61,19 @@ const postBooks = async (req: Request, res: Response) => {
 
 const patchBooks = async (req: Request, res: Response) => {
     try {
+        const validationError = validateBookData(req.body, true)
+
+        if (validationError) {
+            return res.status(400).json({message: validationError})
+        }
+
         const { id } = req.params
         
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({message: HTTP_MESSAGE.INVALID_ID})
         }
         
-        const book = await Book.findByIdAndUpdate(id, req.body, {new: true})
+        const book = await Book.findByIdAndUpdate(id, req.body, {new: true, runValidators: true})
 
 
         if (!book) {
